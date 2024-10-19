@@ -3,7 +3,7 @@ import grpc
 import booking_pb2
 import booking_pb2_grpc
 
-
+# the User service is a gRPC client calling the Booking server > see booking proto
 def get_booking_by_user(stub,userid):
     try :
         booking = stub.GetBookingByUserID(userid)
@@ -55,7 +55,7 @@ def get_schedule_by_date(stub,date):
     return schedule
 
 
-
+# hardcoded tests for debug
 def run():
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be
     # used in circumstances in which the with statement does not fit the needs
@@ -77,6 +77,7 @@ def run():
 
     channel.close()
 
+# function to open a channel and call the booking gRPC server to get one user's bookings
 def run_get_bookings_by_userid(userid):
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be
     # used in circumstances in which the with statement does not fit the needs
@@ -90,6 +91,7 @@ def run_get_bookings_by_userid(userid):
         return bookings
     channel.close()
 
+# function to open a channel and call the booking gRPC server to add a booking to a user
 def run_add_booking_user(userid,request):
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be
     # used in circumstances in which the with statement does not fit the needs
@@ -105,7 +107,8 @@ def run_add_booking_user(userid,request):
         return booking
 
     channel.close()
-
+    
+# function to open a channel and call the booking gRPC server to get the showtimes on a specific date
 def get_schedule_date(date):
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be
     # used in circumstances in which the with statement does not fit the needs
