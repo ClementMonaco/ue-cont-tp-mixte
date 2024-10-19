@@ -1,30 +1,34 @@
 import json
 from graphql import GraphQLError
 
+# get a movie by passing in its id
 def movie_with_id(_,info,_id):
     with open('{}/data/movies.json'.format("."), "r") as file:
         movies = json.load(file)
         for movie in movies['movies']:
             if movie['id'] == _id:
                 return movie
-            
+# get a movie by passing in its title
 def movie_with_title(_,info,_title):
     with open('{}/data/movies.json'.format("."), "r") as file:
         movies = json.load(file)
         for movie in movies['movies']:
             if movie['title'] == _title:
                 return movie
-            
+
+# get whole movies json db
 def all_movies(_,info):
     with open('{}/data/movies.json'.format("."), "r") as file:
         movies = json.load(file)
         return movies["movies"]
-    
+
+# get whole actors json db
 def all_actors(_,info):
     with open('{}/data/actors.json'.format("."), "r") as file:
         actors = json.load(file)
         return actors["actors"]
-    
+
+# get actor by passing in its id
 def actor_with_id(_,info,_id):
     with open('{}/data/actors.json'.format("."), "r") as file:
         actors = json.load(file)
@@ -32,6 +36,7 @@ def actor_with_id(_,info,_id):
             if actor['id'] == _id:
                 return actor
 
+# update a movie's rate by passing in its id and the new rate
 def update_movie_rate(_,info,_id,_rate):
     newmovies = {}
     newmovie = {}
@@ -46,6 +51,7 @@ def update_movie_rate(_,info,_id,_rate):
         json.dump(newmovies, wfile)
     return newmovie
 
+# add a movie to the movies db
 def add_movie(_,info,_id,_title,_director,_rating):
     newmovie = {}
     with open('{}/data/movies.json'.format("."), "r") as rfile:
@@ -64,6 +70,7 @@ def add_movie(_,info,_id,_title,_director,_rating):
         json.dump(movies, wfile)
     return newmovie
 
+# delete a movie from the movies db
 def delete_movie(_,info,_id):
     newmovies = {}
     deleted_movie = {}
@@ -80,6 +87,7 @@ def delete_movie(_,info,_id):
         json.dump(newmovies, wfile)
     return deleted_movie
 
+# add an actor to the actors db
 def add_actor(_,info,_id,_firstname,_lastname,_birthyear):
     newactor = {}
     with open('{}/data/actors.json'.format("."), "r") as rfile:
@@ -99,6 +107,7 @@ def add_actor(_,info,_id,_firstname,_lastname,_birthyear):
         json.dump(actors, wfile)
     return newactor
 
+# add a movie to an actor by passing in the actor id and the movie id
 def add_movie_to_actor(_,info,_id_movie,_id_actor):
     newactors = {}
     newactor = {}
