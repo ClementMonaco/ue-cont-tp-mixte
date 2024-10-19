@@ -1,4 +1,5 @@
 # ue-cont-tp-mixte
+This is a small application that manages film reservations for users at a local cinema. The application is composed of 4 micro-services, and the entrypoint for users is the User service. From there, users can consult information about the films on air at their local cinema, rate them, and book reservations online.
 
 To be able to use our software you have to first run each microservice,
 Services need to be run in parallel (in different terminals) :
