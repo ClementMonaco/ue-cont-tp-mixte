@@ -1,0 +1,343 @@
+openapi: '3.0.3'
+info:
+  title: User API
+  description: This is the entrypoint for users - the API of the User service, which manages the database user.json and provides endpoints for users to get information on movies, check dates, and book a movie. The database contains information about the users themselves.
+  contact:
+    email: sarah.blevin@imt-atlantique.net
+  license:
+    name: GPL v3
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
+  version: 1.0.0
+tags:
+- name: admins
+  description: Secured Admin-only calls
+- name: developers
+  description: Operations available to regular developers
+paths:
+  /:
+    get:
+      tags:
+      - developers
+      summary: Home page of the service
+      description: Displays the welcome page for the User service.
+      operationId: home
+      responses:
+        "200":
+          description: Welcome message
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<h1 style='color:blue'>Welcome to the User service!</h1>"
+  /users:
+    get:
+      tags:
+      - developers
+      summary: Get the full JSON database
+      description: Displays the full users.json JSON
+      operationId: get_json
+      responses:
+        "200":
+          description: Full JSON
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllUsers'
+  /user/{userid}:
+    get:
+      tags:
+      - developers
+      summary: Get the info from a user ID
+      description: By passing in the user ID, you can get other information of a user.
+      operationId: get_user
+      parameters:
+      - name: userid
+        in: path
+        description: User ID.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Information of the user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        "400":
+          description: User not found
+  /userbookings/{userid}:
+    get:
+      tags:
+      - developers
+      summary: Get the bookings from a user ID
+      description: By passing in the user ID, you can get bookings of a user.
+      operationId: get_bookings_for_user
+      parameters:
+      - name: userid
+        in: path
+        description: User ID.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Bookings of the user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingsUser'
+        "404":
+          description: User not found in bookings
+    post:
+      tags:
+      - admins
+      summary: Add a booking for a user
+      description: Adds a booking for the user. The showtimes service must be requested to check the validity of the booking.
+      operationId: add_booking_byuser
+      parameters:
+      - name: userid
+        in: path
+        description: User ID.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Item to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMovie'
+      responses:
+        "200":
+          description: Booking created
+        "410":
+          description: Booking could not be added
+  /moviesbyuser/{userid}:
+    get:
+      tags:
+      - developers
+      summary: Get the info on movies from a user ID
+      description: By passing in the user ID, you can get information on movies the user is going to watch.
+      operationId: get_movies_by_user
+      parameters:
+      - name: userid
+        in: path
+        description: User ID.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Information on movies the user is going to watch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllMovies'
+        "404":
+          description: User not found
+  /usershowmovies/{date}:
+    get:
+      tags:
+      - developers
+      summary: Get the shows available on a date
+      description: By passing in the date, you can get showtimes on this day.
+      operationId: get_showtimes_by_date
+      parameters:
+      - name: date
+        in: path
+        description: Date.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Shows available on that date
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DateItem'
+        "404":
+          description: No movies on this date
+  /useraddmovie/{movieid}:
+    post:
+      tags:
+      - admins
+      summary: Add a movie
+      description: Adds a movie by movie ID.
+      operationId: add_movie_byuser
+      parameters:
+      - name: movieid
+        in: path
+        description: Movie ID.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      requestBody:
+        description: Item to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovieItem'
+      responses:
+        "200":
+          description: Movie added
+        "405":
+          description: Movie already exists
+  /adduser/{username}:
+    post:
+      tags:
+      - admins
+      summary: Add a user
+      description: Adds a user by username.
+      operationId: add_user
+      parameters:
+      - name: username
+        in: path
+        description: Username.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: User added
+        "409":
+          description: User already exists
+  /usermovies/{movieid}/{rate}:
+    put:
+      tags:
+      - admins
+      summary: Update a movie rating
+      description: Update the rating of a movie.
+      operationId: update_movie_rating
+      parameters:
+      - name: movieid
+        in: path
+        description: Movie ID.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: rate
+        in: path
+        description: Movie rating.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maximum: 10
+          minimum: 0
+          type: integer
+      responses:
+        "200":
+          description: Movie rating updated
+        "409":
+          description: Movie ID not found
+  /help:
+    get:
+      tags:
+      - developers
+      summary: Get help information for this API
+      description: This endpoint provides help information and usage instructions for this API.
+      operationId: get_help
+      responses:
+        "200":
+          description: Help information provided
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "<h1>Help Information</h1><p>This is the User API. You can use it to manage users and their movie bookings.</p>"
+components:
+  schemas:
+    AllUsers:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
+    User:
+      required:
+      - username
+      - userid
+      - last_active
+      type: object
+      properties:
+        userid:
+          type: string
+          example: chris_rivers
+        username:
+          type: string
+          example: Chris Rivers
+        last_active:
+          type: integer
+          example: 1360031225
+    BookingsUser:
+      required:
+      - dates
+      - userid
+      type: object
+      properties:
+        userid:
+          type: string
+          example: chris_rivers
+        dates:
+          type: array
+          items:
+            $ref: '#/components/schemas/DateItem'
+    DateItem:
+      required:
+      - date
+      - movies
+      type: object
+      properties:
+        date:
+          type: string
+          example: "20151201"
+        movies:
+          type: array
+          items:
+            type: string
+            example: 276c79ec-a26a-40a6-b3d3-fb242a5947b6
+    NewMovie:
+      required:
+      - date
+      - movieid
+      type: object
+      properties:
+        date:
+          type: string
+          example: "20151201"
+        movieid:
+          type: string
+          example: 276c79ec-a26a-40a6-b3d3-fb242a5947b6
+    AllMovies:
+      type: object
+      required:
+        - movies
+      properties:
+        movies:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/MovieItem'
+    MovieItem:
+      type: object
+      required:
+        - title
+        - rating
+        - director
+        - id
