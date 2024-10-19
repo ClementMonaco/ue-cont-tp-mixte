@@ -3,6 +3,8 @@ import grpc
 import showtime_pb2
 import showtime_pb2_grpc
 
+# The service Booking is calling the Showtime service via the gRPC API. 
+# This file is the client Booking code for calling Showtime. > see showtime/showtime.py
 
 def get_showtime_by_date(stub,date):
     schedule = stub.GetShowtimeByDate(date)
@@ -20,6 +22,7 @@ def get_showtimes(stub):
             print(movie)
     return allschedule
 
+# hardcoded tests for debug
 def run():
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be
     # used in circumstances in which the with statement does not fit the needs
@@ -35,6 +38,7 @@ def run():
 
     channel.close()
 
+# function to open a communication with the Showtime service and get the showtimes by passing in a date
 def run_movie_check_for_date(date):
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be
     # used in circumstances in which the with statement does not fit the needs
