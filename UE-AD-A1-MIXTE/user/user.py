@@ -58,8 +58,6 @@ def get_bookings_by_userid(userid):
 def get_movies_by_date(date):
     # Call the Bookings Service
     booking_req = userClient.get_schedule_date(str(date))
-    print("1")
-    print(booking_req)
     if booking_req == []:
         return make_response(jsonify({"error":"No movies on air at this date"}),404)
 
@@ -97,6 +95,34 @@ def get_movies_by_userid(userid):
             json_.append(movie_req.json())
 
     res = make_response(jsonify(json_),200)
+    return res
+
+# get the movie info; by passing in the movie ID
+@app.route("/movie/<movieid>", methods=['GET'])
+def get_movie_info_by_id(movieid):
+    
+    body = """
+        query Movie_with_id {
+          movie_with_id(_id: \""""+ str(movieid) +"""\") {
+             id
+             title
+             director
+             rating
+             actors {
+                id
+                firstname
+                lastname
+                birthyear
+                films
+            }
+          }
+       }
+        """
+
+    #Calling the movie service
+    movie_req= requests.post('http://127.0.0.1:3001/graphql', json={"query": body})
+
+    res = make_response(jsonify(movie_req.json()),200)
     return res
 
 # add a movie to the system
