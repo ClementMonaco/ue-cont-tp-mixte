@@ -64,16 +64,16 @@ def run():
         stub = booking_pb2_grpc.BookingStub(channel)
 
         print("-------------- GetBookingByUserID --------------")
-        user_id = booking_pb2.UserID(id="d")
+        user_id = booking_pb2.UserID(id="dwight_schrute")
         get_booking_by_user(stub, user_id)
         print("-------------- GetBookings ---------------------")
         get_bookings(stub)
-        print("-------------- PostBooking ---------------------")
-        date_schedule = booking_pb2.DateSchedule(date="20151202", movies = ["96798c08-d19b-4986-a05d-7da856efb697"])
-        print(date_schedule.date)
-        userschedule = [date_schedule]
-        userbooking = booking_pb2.UserBooking(userid="chovy_wins_worlds", schedule = userschedule)
-        add_booking(stub, userbooking)
+        #print("-------------- PostBooking ---------------------")
+        #date_schedule = booking_pb2.DateSchedule(date="20151202", movies = ["96798c08-d19b-4986-a05d-7da856efb697"])
+        #print(date_schedule.date)
+        #userschedule = [date_schedule]
+        #userbooking = booking_pb2.UserBooking(userid="chovy_wins_worlds", schedule = userschedule)
+        #add_booking(stub, userbooking)
 
     channel.close()
 
